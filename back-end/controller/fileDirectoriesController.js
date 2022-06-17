@@ -19,9 +19,23 @@ export const getDirectoryInfo = (req, res) => {
 
 export const addFilePath = async (req, res) => {
   const { directoryName } = req.body;
+  return getDirectories(directoryName, res);
+  // readdir(directoryName, { withFileTypes: true }, (err, data) => {
+  //   if (err)
+  //     return res.status(500).json({ message: "Not able to read directory" });
+  //   res.status(200).json(data.filter((item) => item.isDirectory()));
+  // });
+};
+
+function getDirectories(directoryName, res) {
   readdir(directoryName, { withFileTypes: true }, (err, data) => {
     if (err)
       return res.status(500).json({ message: "Not able to read directory" });
     res.status(200).json(data.filter((item) => item.isDirectory()));
   });
+}
+
+export const getDirectoryList = (req, res) => {
+  const { directoryName } = req.body;
+  return getDirectories(directoryName, res);
 };

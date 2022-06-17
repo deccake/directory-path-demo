@@ -1,7 +1,7 @@
 import { DirectoryList } from "./DirectoryList";
 import { InputDirectoryPath } from "./InputDirectoryPath";
 import DirectoryService from "../services/DirectoryService";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const DirectoryContainer = () => {
   const [list, setList] = useState([]);
@@ -12,6 +12,22 @@ export const DirectoryContainer = () => {
   const handleChange = (event) => {
     setDirectoryName(event.target.value);
   };
+
+  useEffect(() => {
+    const getInfo = async () => {
+      const res = await DirectoryService.sendDirectoryName(
+        originalDirectoryName
+      );
+      setList(res.data);
+    };
+    getInfo();
+
+    const interval = setInterval(() => getInfo(), 30000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   const validDirectoryPath = () => {
     const regex = /(?:[^\\/:*?"<>|\r\n]+\\)* /;
